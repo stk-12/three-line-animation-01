@@ -77,7 +77,7 @@ class Main {
 
 
   _addRingMesh() {
-    const geometry = new THREE.RingGeometry(200, 201, 128);
+    const geometry = new THREE.RingGeometry(200, 200.5, 128);
     const material = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
 
     this.instancedMesh = new THREE.InstancedMesh(geometry, material, this.instanceCount);
@@ -109,9 +109,10 @@ class Main {
     for (let i = 0; i < this.instanceCount; i++) {
       const index = i + 1;
       this.instanceDummy.rotation.set(
-        radian(index * 2) + elapsedTime * 0.1,
-        radian(index * 1.5) + elapsedTime * 0.3,
+        radian(index * 3) + elapsedTime * 1.1,
+        radian(index * 1.5) + elapsedTime * 1.06,
         radian(index * 1) + elapsedTime * 0.05,
+        // 0
       );
       this.instanceDummy.updateMatrix();
       this.instancedMesh.setMatrixAt(i, this.instanceDummy.matrix);
