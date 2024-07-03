@@ -1,7 +1,10 @@
 import '../css/style.scss'
 import * as THREE from "three";
 import { radian } from "./utils";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+gsap.registerPlugin(ScrollTrigger);
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import vertexSource from "./shader/vertexShader.glsl";
 import fragmentSource from "./shader/fragmentShader.glsl";
 
@@ -20,11 +23,24 @@ class Main {
     this.cameraFov = 45;
     this.cameraFovRadian = (this.cameraFov / 2) * (Math.PI / 180);
     this.cameraDistance = (this.viewport.height / 2) / Math.tan(this.cameraFovRadian);
-    this.controls = null;
+    // this.controls = null;
 
     this.instancedMesh = null;
     this.instanceCount = 100;
     this.instanceDummy = new THREE.Object3D();
+
+    this.animationParams = {
+      speed: {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+      },
+      scale: {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+      }
+    }
 
     this.uniforms = {
       uTime: {
@@ -63,10 +79,10 @@ class Main {
     this.scene.add(this.camera);
   }
 
-  _setControlls() {
-    this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enableDamping = true;
-  }
+  // _setControlls() {
+  //   this.controls = new OrbitControls(this.camera, this.canvas);
+  //   this.controls.enableDamping = true;
+  // }
 
   _setLight() {
     const light = new THREE.DirectionalLight(0xffffff, 1.5);
@@ -90,12 +106,57 @@ class Main {
     this.scene.add(this.instancedMesh);
   }
 
+  _setAnimation() {
+    // const tl1 = gsap.timeline({
+    //   scrollTrigger: {
+    //     trigger: '#section02',
+    //     start: 'top bottom',
+    //     toggleActions: 'play none none reverse',
+    //     // markers: true,
+    //     onEnter: ()=> {
+    //       console.log('on enter');
+    //       gsap.to(this.animationParams.scale, {
+    //         x: 0.5,
+    //         y: 1.4,
+    //         duration: 0.9,
+    //         ease: "power3.inOut"
+    //       })
+    //     },
+    //     onLeaveBack: ()=> {
+    //       console.log('on leaveback');
+    //       gsap.to(this.animationParams.scale, {
+    //         x: 1.0,
+    //         y: 1.0,
+    //         duration: 0.9,
+    //         ease: "power3.inOut"
+    //       })
+    //     }
+    //   }
+    // });
+
+    const tl1 = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#section02',
+        start: 'top bottom',
+        end: 'bottom bottom',
+        scrub: true,
+        // markers: true,
+      }
+    });
+    tl1.to(this.animationParams.scale, {
+      x: 0.5,
+      y: 1.4,
+    })
+
+  }
+
   init() {
     this._setRenderer();
     this._setCamera();
-    this._setControlls();
+    // this._setControlls();
     this._setLight();
     this._addRingMesh();
+    this._setAnimation();
 
     this._update();
     this._addEvent();
@@ -111,11 +172,15 @@ class Main {
         radian(index * 3) + elapsedTime * 1.1,
         radian(index * 1.5) + elapsedTime * 1.06,
         radian(index * 1) + elapsedTime * 0.05,
+        // radian(index * 3) + elapsedTime * 0.0,
+        // radian(index * 1.5) + elapsedTime * 0.1,
+        // radian(index * 1) + elapsedTime * 0.0,
         // 0,
         // 0,
         // 0
       );
-      this.instanceDummy.scale.set(Math.sin(elapsedTime + index * 0.05), Math.cos(elapsedTime + index * 0.03), 1.0);
+      // this.instanceDummy.scale.set(Math.sin(elapsedTime + index * 0.05), Math.cos(elapsedTime + index * 0.03), 1.0);
+      this.instanceDummy.scale.set(this.animationParams.scale.x, this.animationParams.scale.y, this.animationParams.scale.z);
       this.instanceDummy.updateMatrix();
       this.instancedMesh.setMatrixAt(i, this.instanceDummy.matrix);
     }
@@ -123,7 +188,7 @@ class Main {
 
     //レンダリング
     this.renderer.render(this.scene, this.camera);
-    this.controls.update();
+    // this.controls.update();
     requestAnimationFrame(this._update.bind(this));
   }
 
