@@ -5,7 +5,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import vertexSource from "./shader/vertexShader.glsl";
 import fragmentSource from "./shader/fragmentShader.glsl";
 
-import img from '../images/image.jpg';
 
 class Main {
   constructor() {
@@ -24,7 +23,7 @@ class Main {
     this.controls = null;
 
     this.instancedMesh = null;
-    this.instanceCount = 40;
+    this.instanceCount = 100;
     this.instanceDummy = new THREE.Object3D();
 
     this.uniforms = {
@@ -77,7 +76,7 @@ class Main {
 
 
   _addRingMesh() {
-    const geometry = new THREE.RingGeometry(200, 200.5, 128);
+    const geometry = new THREE.RingGeometry(300, 300.5, 128);
     const material = new THREE.MeshBasicMaterial({ color: 0x000000, side: THREE.DoubleSide });
 
     this.instancedMesh = new THREE.InstancedMesh(geometry, material, this.instanceCount);
@@ -112,8 +111,11 @@ class Main {
         radian(index * 3) + elapsedTime * 1.1,
         radian(index * 1.5) + elapsedTime * 1.06,
         radian(index * 1) + elapsedTime * 0.05,
+        // 0,
+        // 0,
         // 0
       );
+      this.instanceDummy.scale.set(Math.sin(elapsedTime + index * 0.05), Math.cos(elapsedTime + index * 0.03), 1.0);
       this.instanceDummy.updateMatrix();
       this.instancedMesh.setMatrixAt(i, this.instanceDummy.matrix);
     }
