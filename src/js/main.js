@@ -31,15 +31,21 @@ class Main {
 
     this.animationParams = {
       speed: {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
+        x: 1.1,
+        y: 1.06,
+        z: 0.05,
       },
       scale: {
         x: 1.0,
         y: 1.0,
         z: 1.0,
-      }
+      },
+      position: {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0
+      },
+      wave: false,
     }
 
     this.uniforms = {
@@ -148,6 +154,24 @@ class Main {
       y: 1.4,
     })
 
+    const tl2 = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#section03',
+        start: 'top bottom',
+        end: 'bottom bottom',
+        scrub: true,
+        // markers: true,
+      }
+    });
+    tl2.to(this.animationParams.position, {
+      x: 400,
+      y: 100,
+    })
+    .to(this.animationParams.scale, {
+      x: 0.6,
+      y: 0.4,
+    }, '<')
+
   }
 
   init() {
@@ -168,6 +192,7 @@ class Main {
 
     for (let i = 0; i < this.instanceCount; i++) {
       const index = i + 1;
+
       this.instanceDummy.rotation.set(
         radian(index * 3) + elapsedTime * 1.1,
         radian(index * 1.5) + elapsedTime * 1.06,
@@ -179,8 +204,24 @@ class Main {
         // 0,
         // 0
       );
+
+
       // this.instanceDummy.scale.set(Math.sin(elapsedTime + index * 0.05), Math.cos(elapsedTime + index * 0.03), 1.0);
       this.instanceDummy.scale.set(this.animationParams.scale.x, this.animationParams.scale.y, this.animationParams.scale.z);
+
+
+      // this.instanceDummy.position.set(
+      //   // index * 5.0 + Math.sin(elapsedTime) * 200.0,
+      //   Math.sin(elapsedTime + index * 0.03) * 300.0,
+      //   Math.sin(elapsedTime * 1.5 + index * 0.03) * 200.0,
+      //   0,
+      // );
+      this.instanceDummy.position.set(
+        Math.sin(elapsedTime + index * 0.03) * this.animationParams.position.x,
+        Math.sin(elapsedTime * 1.5 + index * 0.03) * this.animationParams.position.x,
+        0,
+      );
+
       this.instanceDummy.updateMatrix();
       this.instancedMesh.setMatrixAt(i, this.instanceDummy.matrix);
     }
