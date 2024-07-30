@@ -23,15 +23,22 @@ canvas {
   left: 0;
 }
 
-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 16px;
+// header {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   padding: 16px;
 
-  h1 {
-    font-size: 20px;
-  }
+//   h1 {
+//     font-size: 20px;
+//   }
+// }
+
+h1 {
+  font-size: 2.5vw;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .scroll {
